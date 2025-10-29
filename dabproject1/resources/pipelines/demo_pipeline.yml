@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_ingestion_pipeline:
+      name: ingestion_pipeline
+      libraries:
+        - glob:
+            include: ../../src/pipelines/ingestion_pipeline/transformations/**
+      schema: bronze
+      continuous: false
+      development: false
+      photon: true
+      channel: CURRENT
+      catalog: ${var.catalog_name}
+      serverless: true
+      root_path: ../../src/pipelines/ingestion_pipeline
