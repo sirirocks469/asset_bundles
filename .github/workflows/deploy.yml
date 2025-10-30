@@ -2,41 +2,32 @@ name: Deploy Databricks Bundle
 
 on:
   push:
-    branches:
-      - main   # or the branch you’re using in Databricks (e.g. feature_one)
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Databricks CLI
-        run: |
-          python -m pip install --upgrade pip
-          pip install databricks-cli
+      - name: Install Databricks CLI (v1)
+        run: pip install --upgrade "databricks-cli>=0.205.0"
 
-      - name: Configure Databricks CLI
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          mkdir -p ~/.databricks
-          echo "[DEFAULT]" > ~/.databricks/config
-          echo "host = ${DATABRICKS_HOST}" >> ~/.databricks/config
-          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databricks/config
-
-      - name: Validate bundle
-        working-directory: dabproject1   # replace with your bundle folder name
+      - name: Validate Databricks bundle
         run: databricks bundle validate
+        working-directory: dabproject1   # change if your folder name is different
 
-      - name: Deploy bundle
-        working-directory: dabproject1
+      - name: Deploy Databricks bundle
         run: databricks bundle deploy
+        working-directory: dabproject1
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
