@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature_one   # optional, include your branch if needed
+      - feature_one
 
 jobs:
   deploy:
@@ -22,16 +22,19 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
 
-      - name: Install new Databricks CLI (v1)
-        run: pip install "databricks-cli>=0.205.0"
+      # ✅ Install the new CLI (v1)
+      - name: Install Databricks CLI (v1)
+        run: pip install databricks
 
       - name: Check Databricks CLI version
         run: databricks --version
 
+      # ✅ Validate the bundle
       - name: Validate Databricks bundle
         run: databricks bundle validate
-        working-directory: dabproject1   # change if your bundle folder name is different
+        working-directory: dabproject1
 
+      # ✅ Deploy the bundle
       - name: Deploy Databricks bundle
         run: databricks bundle deploy
         working-directory: dabproject1
@@ -39,5 +42,6 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
 
 
