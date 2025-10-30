@@ -22,7 +22,7 @@ jobs:
       # ✅ Install Databricks CLI v1 (official)
       - name: Install official Databricks CLI (v1)
         run: |
-          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
+          curl -fsSL https://raw.githubusercontent.com/databricks/cli/v1/install.sh | bash
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
           export PATH="$HOME/.databricks/bin:$PATH"
           databricks --version
