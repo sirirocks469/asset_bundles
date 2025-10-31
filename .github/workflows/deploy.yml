@@ -19,24 +19,34 @@ jobs:
         with:
           python-version: "3.10"
 
-      # ✅ Install official Databricks CLI (v1) with pip
-      - name: Install official Databricks CLI (v1)
+      # ✅ Install official Databricks CLI (v1)
+      - name: Install Databricks CLI v1 (official release)
         run: |
-          pip install databricks-cli
-          echo "${HOME}/.local/bin" >> $GITHUB_PATH
+          curl -L -o databricks.tar.gz https://github.com/databricks/cli/releases/latest/download/databricks_linux_amd64.tar.gz
+          mkdir -p $HOME/.databricks/bin
+          tar -xzf databricks.tar.gz -C $HOME/.databricks/bin
+          chmod +x $HOME/.databricks/bin/databricks
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.databricks/bin:$PATH"
+          databricks version
 
       # ✅ Validate the bundle
       - name: Validate Databricks bundle
-        run: databricks bundle validate
+        run: |
+          export PATH="$HOME/.databricks/bin:$PATH"
+          databricks bundle validate
         working-directory: dabproject1
 
       # ✅ Deploy the bundle
       - name: Deploy Databricks bundle
-        run: databricks bundle deploy
+        run: |
+          export PATH="$HOME/.databricks/bin:$PATH"
+          databricks bundle deploy
         working-directory: dabproject1
 
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
 
 
