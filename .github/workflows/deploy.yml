@@ -19,10 +19,14 @@ jobs:
         with:
           python-version: "3.10"
 
-      # ✅ Install official Databricks CLI (v1)
-      - name: Install Databricks CLI v1 (official release)
+      # ✅ Install Databricks CLI (v1)
+      - name: Install Databricks CLI v1 (official binary)
         run: |
-          curl -L -o databricks.tar.gz https://github.com/databricks/cli/releases/latest/download/databricks_linux_amd64.tar.gz
+          LATEST_URL=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
+            | grep "browser_download_url.*linux_amd64" \
+            | cut -d '"' -f 4)
+          echo "Downloading Databricks CLI from: $LATEST_URL"
+          curl -L -o databricks.tar.gz "$LATEST_URL"
           mkdir -p $HOME/.databricks/bin
           tar -xzf databricks.tar.gz -C $HOME/.databricks/bin
           chmod +x $HOME/.databricks/bin/databricks
@@ -47,6 +51,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
 
 
 
